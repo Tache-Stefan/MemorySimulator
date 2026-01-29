@@ -43,7 +43,7 @@ void Simulation::handleRead() {
 
 void Simulation::handleWrite() {
   uint8_t addr = MenuController::getCurrentAddr();
-  uint8_t value = MenuController::getCurrentValue();
+  uint8_t value = cache.readByte(addr);
   cache.writeByte(addr, value + 1);
 
   refreshLEDs();
