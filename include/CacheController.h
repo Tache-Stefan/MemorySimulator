@@ -21,6 +21,7 @@ public:
   uint8_t readByte(const uint8_t virtualAddr);
   void writeByte(const uint8_t virtualAddr, const uint8_t data);
 
+  bool hasDirtyL1() const;
   AccessStatus getLastStatus() const;
 
 private:

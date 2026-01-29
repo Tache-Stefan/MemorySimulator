@@ -218,6 +218,15 @@ void CacheController::flushL2Entry(const uint8_t index) {
   l2[index].dirty = false;
 }
 
+bool CacheController::hasDirtyL1() const {
+  for (uint8_t i = 0; i < L1_SIZE; ++i) {
+    if (l1[i].valid && l1[i].dirty) {
+      return true;
+    }
+  }
+  return false;
+}
+
 AccessStatus CacheController::getLastStatus() const {
   return lastStatus;
 }

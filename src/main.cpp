@@ -1,20 +1,9 @@
-#include <LiquidCrystal.h>
-#include "CacheController.h"
-#include "ButtonManager.h"
-#include "LEDController.h"
-#include "LCDRenderer.h"
-
-CacheController cacheController;
-ButtonManager buttonManager;
-LEDController ledController;
-LCDRenderer lcdRenderer;
+#include "Simulation.h"
 
 void setup() {
-  cacheController.init();
-  ButtonManager::init();
-  LEDController::init();
-  LCDRenderer::init();
+  Simulation::init();
 }
 
 void loop() {
+  Simulation::update();
 }

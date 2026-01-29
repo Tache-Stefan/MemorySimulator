@@ -12,6 +12,6 @@ public:
 
 private:
   static constexpr uint8_t LED_HIT = 8;
-  static constexpr uint8_t LED_MISS = 9;
-  static constexpr uint8_t LED_DIRTY = 12;
+  static constexpr uint8_t LED_DIRTY = 9;
+  static constexpr uint8_t LED_MISS = 12;
 };

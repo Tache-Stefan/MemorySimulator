@@ -12,9 +12,9 @@ void LCDRenderer::showMemoryState(const uint8_t virtualAddr, const uint8_t value
   screen.clear();
   
   screen.setCursor(0, 0);
-  screen.print("A:");
+  screen.print("A:0x");
   screen.print(virtualAddr, HEX);
-  screen.print(" V:");
+  screen.print(" V:0x");
   screen.print(value, HEX);
   
   screen.setCursor(0, 1);
