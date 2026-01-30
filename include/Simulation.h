@@ -18,6 +18,7 @@ private:
   
   static void handleRead();
   static void handleWrite();
+  static void handlePolicyChange();
   static void refreshDisplay();
   static void refreshLEDs();
 };

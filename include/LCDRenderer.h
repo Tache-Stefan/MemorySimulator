@@ -8,6 +8,7 @@ class LCDRenderer {
 public:
   static void init();
   static void showMemoryState(const uint8_t virtualAddr, const uint8_t value, const AccessStatus status);
+  static void showPolicySelect(const char* currentPolicy);
 
 private:
   static LiquidCrystal screen;

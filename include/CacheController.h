@@ -17,6 +17,7 @@ enum class AccessStatus {
 class CacheController {
 public:
   void init();
+  void reset();
 
   uint8_t readByte(const uint8_t virtualAddr);
   void writeByte(const uint8_t virtualAddr, const uint8_t data);
@@ -24,24 +25,28 @@ public:
   bool hasDirtyL1() const;
   AccessStatus getLastStatus() const;
 
+  void setEvictionPolicy(const EvictionPolicy policy);
+  EvictionPolicy getEvictionPolicy() const;
+  const char* getPolicyName() const;
+
 private:
   L1Line l1[L1_SIZE];
   L2Line l2[L2_SIZE];
   PageTableEntry pageTable[VIRTUAL_SIZE];
   AccessStatus lastStatus = AccessStatus::IDLE;
+  EvictionPolicy currentPolicy = EvictionPolicy::LRU;
 
   int16_t translateAddr(const uint8_t virtualAddr);
 
   int16_t findInL1(const uint8_t physicalAddr);
-  int16_t findEmptyOrOldestL1();
-  void flushL1Entry(const uint8_t index);
-  void updateAgeL1(const uint8_t hitIndex);
+  int16_t findEvictionCandidateL1();
+  void updateAccessL1(const uint8_t hitIndex);
   void insertL1Clean(const uint8_t physicalAddr, const uint8_t data);
 
   bool checkL2(const uint8_t physicalAddr, uint8_t& data);
   void updateL2(const uint8_t physicalAddr, const uint8_t data, bool markDirty = false);
   int16_t findInL2(const uint8_t physicalAddr);
-  int16_t findEmptyOrOldestL2();
-  void updateAgeL2(const uint8_t hitIndex);
+  int16_t findEvictionCandidateL2();
+  void updateAccessL2(const uint8_t hitIndex);
   void flushL2Entry(const uint8_t index);
 };

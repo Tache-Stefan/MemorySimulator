@@ -21,6 +21,18 @@ void LCDRenderer::showMemoryState(const uint8_t virtualAddr, const uint8_t value
   screen.print(statusToString(status));
 }
 
+void LCDRenderer::showPolicySelect(const char* currentPolicy) {
+  screen.clear();
+  
+  screen.setCursor(0, 0);
+  screen.print("Eviction Policy:");
+  
+  screen.setCursor(0, 1);
+  screen.print("> ");
+  screen.print(currentPolicy);
+  screen.print(" <");
+}
+
 const char* LCDRenderer::statusToString(const AccessStatus status) {
   switch (status) {
     case AccessStatus::IDLE:

@@ -8,6 +8,7 @@ struct L1Line {
   bool valid;
   bool dirty;
   uint8_t age;
+  uint8_t frequency;
 };
 
 struct L2Line {
@@ -15,6 +16,7 @@ struct L2Line {
   bool valid;
   bool dirty;
   uint8_t age;
+  uint8_t frequency;
 };
 
 struct PageTableEntry {
