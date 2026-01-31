@@ -1,6 +1,7 @@
 #include "Simulation.h"
 
 CacheController Simulation::cache;
+BenchmarkResult Simulation::lastBenchmarkResult;
 
 void Simulation::init() {
   cache.init();
@@ -9,6 +10,7 @@ void Simulation::init() {
   LCDRenderer::init();
   MemoryHAL::init();
   ButtonManager::init();
+  Benchmark::init(&cache);
 
   refreshDisplay();
   Serial.begin(9600);
@@ -19,6 +21,7 @@ void Simulation::update() {
 
   switch (action) {
     case MenuAction::NAVIGATE:
+    case MenuAction::DISMISS_RESULT:
       refreshDisplay();
       break;
     case MenuAction::READ:
@@ -29,6 +32,9 @@ void Simulation::update() {
       break;
     case MenuAction::POLICY_CHANGE:
       handlePolicyChange();
+      break;
+    case MenuAction::RUN_BENCHMARK:
+      handleRunBenchmark();
       break;
     default:
       break;
@@ -77,6 +83,22 @@ void Simulation::handlePolicyChange() {
   refreshDisplay();
 }
 
+void Simulation::handleRunBenchmark() {
+  uint8_t index = MenuController::getSelectedBenchmark();
+  BenchmarkPattern pattern = Benchmark::getPatternByIndex(index);
+
+  MenuController::setBenchmarkRunning();
+  LCDRenderer::showBenchmarkRunning(Benchmark::getPatternName(pattern));
+
+  lastBenchmarkResult = Benchmark::run(pattern);
+
+  Serial.println();
+  Benchmark::printResultSerial(lastBenchmarkResult);
+
+  MenuController::setBenchmarkComplete();
+  refreshDisplay();
+}
+
 void Simulation::refreshDisplay() {
   MenuScreen screen = MenuController::getCurrentScreen();
 
@@ -90,6 +112,14 @@ void Simulation::refreshDisplay() {
       break;
     case MenuScreen::POLICY_SELECT:
       LCDRenderer::showPolicySelect(cache.getPolicyName());
+      break;
+    case MenuScreen::BENCHMARK_SELECT:
+      LCDRenderer::showBenchmarkSelect(MenuController::getSelectedBenchmark());
+      break;
+    case MenuScreen::BENCHMARK_RUNNING:
+      break;
+    case MenuScreen::BENCHMARK_RESULT:
+      LCDRenderer::showBenchmarkResult(lastBenchmarkResult);
       break;
   }
 }

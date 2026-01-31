@@ -12,8 +12,8 @@ public:
 
   static uint8_t readL2(const uint16_t addr);
   static void writeL2(const uint16_t addr, const uint8_t data);
-  static uint8_t readMain(const uint16_t addr);
-  static void writeMain(const uint16_t addr, const uint8_t data);
+  static uint8_t readMain(const uint16_t addr, const bool simulateDelay = true);
+  static void writeMain(const uint16_t addr, const uint8_t data, const bool simulateDelay = true);
 
 public:
   static SoftwareWire diskBus;

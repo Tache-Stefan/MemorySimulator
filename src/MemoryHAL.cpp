@@ -15,12 +15,16 @@ void MemoryHAL::writeL2(const uint16_t addr, const uint8_t data) {
   writeI2C(Wire, addr, data);
 }
 
-uint8_t MemoryHAL::readMain(const uint16_t addr) {
-  delay(MAIN_MEMORY_DELAY_MS); // Simulate slower access time
+uint8_t MemoryHAL::readMain(const uint16_t addr, const bool simulateDelay) {
+  if (simulateDelay) {
+    delay(MAIN_MEMORY_DELAY_MS); // Simulate slower access time
+  }
   return readI2C(diskBus, addr);
 }
 
-void MemoryHAL::writeMain(const uint16_t addr, const uint8_t data) {
-  delay(MAIN_MEMORY_DELAY_MS); // Simulate slower access time
+void MemoryHAL::writeMain(const uint16_t addr, const uint8_t data, const bool simulateDelay) {
+  if (simulateDelay) {
+    delay(MAIN_MEMORY_DELAY_MS); // Simulate slower access time
+  }
   writeI2C(diskBus, addr, data);
 }

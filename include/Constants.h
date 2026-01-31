@@ -13,3 +13,13 @@ enum class EvictionPolicy {
   LFU,
   MRU
 };
+
+// Costs (Simulated Cycles)
+constexpr uint8_t COST_L1_HIT = 1;
+constexpr uint8_t COST_L2_HIT = 10;
+constexpr uint8_t COST_MAIN_HIT = 100;
+constexpr uint8_t COST_WRITEBACK = 10;
+constexpr uint8_t COST_SEGFAULT = 50;
+
+constexpr uint8_t BENCHMARK_PATTERN_COUNT = 5;
+constexpr uint8_t BENCHMARK_ACCESS_COUNT = 200;

@@ -33,6 +33,48 @@ void LCDRenderer::showPolicySelect(const char* currentPolicy) {
   screen.print(" <");
 }
 
+void LCDRenderer::showBenchmarkSelect(const uint8_t index) {
+  screen.clear();
+  
+  screen.setCursor(0, 0);
+  screen.print("Run Benchmark:");
+  
+  screen.setCursor(0, 1);
+  screen.print(Benchmark::getPatternName(static_cast<BenchmarkPattern>(index)));
+}
+
+void LCDRenderer::showBenchmarkRunning(const char* patternName) {
+  screen.clear();
+  
+  screen.setCursor(0, 0);
+  screen.print("Running...");
+  
+  screen.setCursor(0, 1);
+  screen.print(patternName);
+}
+
+void LCDRenderer::showBenchmarkResult(const BenchmarkResult& result) {
+  screen.clear();
+  
+  screen.setCursor(0, 0);
+  screen.print("Hit:");
+  screen.print(result.getHitRate(), 1);
+  screen.print("% ");
+  
+  screen.print("L1:");
+  screen.print(result.l1Hits);
+
+  screen.setCursor(0, 1);
+  screen.print("Cyc:");
+  screen.print(result.getAvgCycles(), 1);
+  screen.print(" ");
+
+  const char* patternName = Benchmark::getPatternName(result.pattern);
+  for (uint8_t i = 0; i < 4 && patternName[i] != '\0'; ++i) {
+    screen.print(patternName[i]);
+  }
+}
+
 const char* LCDRenderer::statusToString(const AccessStatus status) {
   switch (status) {
     case AccessStatus::IDLE:

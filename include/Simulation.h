@@ -15,10 +15,12 @@ public:
 
 private:
   static CacheController cache;
+  static BenchmarkResult lastBenchmarkResult;
   
   static void handleRead();
   static void handleWrite();
   static void handlePolicyChange();
+  static void handleRunBenchmark();
   static void refreshDisplay();
   static void refreshLEDs();
 };

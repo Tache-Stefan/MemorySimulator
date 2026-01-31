@@ -3,12 +3,16 @@
 #include <Arduino.h>
 #include <LiquidCrystal.h>
 #include "CacheController.h"
+#include "Benchmark.h"
 
 class LCDRenderer {
 public:
   static void init();
   static void showMemoryState(const uint8_t virtualAddr, const uint8_t value, const AccessStatus status);
   static void showPolicySelect(const char* currentPolicy);
+  static void showBenchmarkSelect(const uint8_t index);
+  static void showBenchmarkRunning(const char* patternName);
+  static void showBenchmarkResult(const BenchmarkResult& result);
 
 private:
   static LiquidCrystal screen;

@@ -6,7 +6,10 @@
 
 enum class MenuScreen {
   MEMORY_ACCESS,
-  POLICY_SELECT
+  POLICY_SELECT,
+  BENCHMARK_SELECT,
+  BENCHMARK_RUNNING,
+  BENCHMARK_RESULT
 };
 
 enum class MenuAction {
@@ -14,7 +17,9 @@ enum class MenuAction {
   NAVIGATE,
   READ,
   WRITE,
-  POLICY_CHANGE
+  POLICY_CHANGE,
+  RUN_BENCHMARK,
+  DISMISS_RESULT
 };
 
 class MenuController {
@@ -25,13 +30,19 @@ public:
   static MenuScreen getCurrentScreen();
   static uint8_t getCurrentAddr();
   static uint8_t getCurrentValue();
+  static uint8_t getSelectedBenchmark();
   static void setCurrentValue(const uint8_t value);
+  static void setBenchmarkRunning();
+  static void setBenchmarkComplete();
 
 private:
   static MenuScreen currentScreen;
   static uint8_t currentAddr;
   static uint8_t currentValue;
+  static uint8_t selectedBenchmark;
 
   static MenuAction handleMemoryAccess(const ButtonEvent event);
   static MenuAction handlePolicySelect(const ButtonEvent event);
+  static MenuAction handleBenchmarkSelect(const ButtonEvent event);
+  static MenuAction handleBenchmarkResult(const ButtonEvent event);
 };
