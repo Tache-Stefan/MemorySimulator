@@ -22,4 +22,4 @@ constexpr uint8_t COST_WRITEBACK = 10;
 constexpr uint8_t COST_SEGFAULT = 50;
 
 constexpr uint8_t BENCHMARK_PATTERN_COUNT = 6;
-constexpr uint8_t BENCHMARK_ACCESS_COUNT = 200;
+constexpr uint8_t BENCHMARK_ACCESS_COUNT = 125;
