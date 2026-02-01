@@ -56,22 +56,43 @@ void LCDRenderer::showBenchmarkRunning(const char* patternName) {
 void LCDRenderer::showBenchmarkResult(const BenchmarkResult& result) {
   screen.clear();
   
-  screen.setCursor(0, 0);
-  screen.print("Hit:");
-  screen.print(result.getHitRate(), 1);
-  screen.print("% ");
-  
-  screen.print("L1:");
-  screen.print(result.l1Hits);
+  if (result.pattern == BenchmarkPattern::COMPARATIVE) {
+    screen.setCursor(0, 0);
+    screen.print("Best:");
+    switch (result.bestPolicy) {
+      case EvictionPolicy::LRU: screen.print("LRU"); break;
+      case EvictionPolicy::LFU: screen.print("LFU"); break;
+      case EvictionPolicy::MRU: screen.print("MRU"); break;
+    }
+    screen.print(" ");
+    screen.print(result.bestHitRate, 1);
+    screen.print("%");
+    
+    screen.setCursor(0, 1);
+    screen.print("L:");
+    screen.print(static_cast<int>(result.policyHitRates[0]));
+    screen.print(" F:");
+    screen.print(static_cast<int>(result.policyHitRates[1]));
+    screen.print(" M:");
+    screen.print(static_cast<int>(result.policyHitRates[2]));
+  } else {
+    screen.setCursor(0, 0);
+    screen.print("Hit:");
+    screen.print(result.getHitRate(), 1);
+    screen.print("% ");
+    
+    screen.print("L1:");
+    screen.print(result.l1Hits);
 
-  screen.setCursor(0, 1);
-  screen.print("Cyc:");
-  screen.print(result.getAvgCycles(), 1);
-  screen.print(" ");
+    screen.setCursor(0, 1);
+    screen.print("Cyc:");
+    screen.print(result.getAvgCycles(), 1);
+    screen.print(" ");
 
-  const char* patternName = Benchmark::getPatternName(result.pattern);
-  for (uint8_t i = 0; i < 4 && patternName[i] != '\0'; ++i) {
-    screen.print(patternName[i]);
+    const char* patternName = Benchmark::getPatternName(result.pattern);
+    for (uint8_t i = 0; i < 4 && patternName[i] != '\0'; ++i) {
+      screen.print(patternName[i]);
+    }
   }
 }
 

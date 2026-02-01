@@ -8,10 +8,19 @@ void Benchmark::init(CacheController* cachePtr) {
 }
 
 BenchmarkResult Benchmark::run(const BenchmarkPattern pattern, const uint16_t numAccesses) {
+  if (pattern == BenchmarkPattern::COMPARATIVE) {
+    return runComparative(numAccesses);
+  }
+  return runSinglePattern(pattern, numAccesses);
+}
+
+BenchmarkResult Benchmark::runSinglePattern(const BenchmarkPattern pattern, const uint16_t numAccesses) {
   BenchmarkResult result;
   result.pattern = pattern;
   result.policy = cache->getEvictionPolicy();
   result.totalAccesses = numAccesses;
+  result.bestPolicy = result.policy;
+  result.bestHitRate = 0;
   
   cache->reset();
   randomSeed(seed);
@@ -52,7 +61,57 @@ BenchmarkResult Benchmark::run(const BenchmarkPattern pattern, const uint16_t nu
   result.l2Hits = stats.l2Hits;
   result.misses = stats.misses;
   result.totalCycles = stats.totalCycles;
+  result.bestHitRate = result.getHitRate();
 
+  return result;
+}
+
+BenchmarkResult Benchmark::runComparative(const uint16_t numAccesses) {
+  BenchmarkResult result;
+  result.pattern = BenchmarkPattern::COMPARATIVE;
+  result.totalAccesses = numAccesses;
+  result.bestHitRate = 0;
+  result.bestPolicy = EvictionPolicy::LRU;
+  
+  EvictionPolicy originalPolicy = cache->getEvictionPolicy();
+  EvictionPolicy policies[] = {EvictionPolicy::LRU, EvictionPolicy::LFU, EvictionPolicy::MRU};
+  
+  // Comparative Hotspot
+  for (uint8_t p = 0; p < POLICY_COUNT; ++p) {
+    cache->setEvictionPolicy(policies[p]);
+    cache->reset();
+    randomSeed(seed);
+    
+    for (uint16_t i = 0; i < numAccesses; ++i) {
+      uint8_t addr = nextHotspot(i);
+      
+      if (random(0, 2) == 0) {
+        cache->readByte(addr, false);
+      } else {
+        cache->writeByte(addr, static_cast<uint8_t>(i & 0xFF), false);
+      }
+    }
+    
+    const CacheStats& stats = cache->getStats();
+    double hitRate = stats.l1Hits + stats.l2Hits;
+    hitRate = (hitRate / numAccesses) * 100.0;
+    
+    result.policyHitRates[p] = hitRate;
+    
+    if (hitRate > result.bestHitRate) {
+      result.bestHitRate = hitRate;
+      result.bestPolicy = policies[p];
+      result.l1Hits = stats.l1Hits;
+      result.l2Hits = stats.l2Hits;
+      result.misses = stats.misses;
+      result.totalCycles = stats.totalCycles;
+    }
+  }
+  
+  result.policy = result.bestPolicy;
+  
+  cache->setEvictionPolicy(originalPolicy);
+  
   return result;
 }
 
@@ -63,6 +122,7 @@ const char* Benchmark::getPatternName(const BenchmarkPattern pattern) {
     case BenchmarkPattern::TEMPORAL:   return "TEMPORAL";
     case BenchmarkPattern::STRIDED:    return "STRIDED";
     case BenchmarkPattern::HOTSPOT:    return "HOTSPOT";
+    case BenchmarkPattern::COMPARATIVE:return "COMPARE HOTSPOT";
     default:                           return "UNKNOWN";
   }
 }
@@ -75,13 +135,35 @@ void Benchmark::printResultSerial(const BenchmarkResult& result) {
   Serial.println(F("=== Benchmark Result ==="));
   Serial.print(F("Pattern: "));
   Serial.println(getPatternName(result.pattern));
-  Serial.print(F("Policy: "));
-  switch (result.policy) {
-    case EvictionPolicy::LRU: Serial.println(F("LRU")); break;
-    case EvictionPolicy::LFU: Serial.println(F("LFU")); break;
-    case EvictionPolicy::MRU: Serial.println(F("MRU")); break;
-    default:                  Serial.println(F("UNKNOWN")); break;
+  
+  if (result.pattern == BenchmarkPattern::COMPARATIVE) {
+    Serial.println(F("--- Policy Comparison ---"));
+    Serial.print(F("LRU: "));
+    Serial.print(result.policyHitRates[0], 1);
+    Serial.println(F("%"));
+    Serial.print(F("LFU: "));
+    Serial.print(result.policyHitRates[1], 1);
+    Serial.println(F("%"));
+    Serial.print(F("MRU: "));
+    Serial.print(result.policyHitRates[2], 1);
+    Serial.println(F("%"));
+    Serial.print(F("BEST: "));
+    switch (result.bestPolicy) {
+      case EvictionPolicy::LRU: Serial.println(F("LRU")); break;
+      case EvictionPolicy::LFU: Serial.println(F("LFU")); break;
+      case EvictionPolicy::MRU: Serial.println(F("MRU")); break;
+      default: Serial.println(F("?")); break;
+    }
+  } else {
+    Serial.print(F("Policy: "));
+    switch (result.policy) {
+      case EvictionPolicy::LRU: Serial.println(F("LRU")); break;
+      case EvictionPolicy::LFU: Serial.println(F("LFU")); break;
+      case EvictionPolicy::MRU: Serial.println(F("MRU")); break;
+      default: Serial.println(F("UNKNOWN")); break;
+    }
   }
+  
   Serial.print(F("L1 Hits: "));
   Serial.println(result.l1Hits);
   Serial.print(F("L2 Hits: "));

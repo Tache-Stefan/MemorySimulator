@@ -96,6 +96,7 @@ void Simulation::handleRunBenchmark() {
   Benchmark::printResultSerial(lastBenchmarkResult);
 
   MenuController::setBenchmarkComplete();
+  cache.reset();
   refreshDisplay();
 }
 

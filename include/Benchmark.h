@@ -10,6 +10,7 @@ enum class BenchmarkPattern {
   TEMPORAL,   // small set of addr
   STRIDED,    // every Nth addr
   HOTSPOT,    // frequent access to few addr
+  COMPARATIVE
 };
 
 struct BenchmarkResult {
@@ -20,6 +21,11 @@ struct BenchmarkResult {
     uint32_t l2Hits;
     uint32_t misses;
     uint32_t totalCycles;
+
+    // Comparative
+    EvictionPolicy bestPolicy;
+    double bestHitRate;
+    double policyHitRates[POLICY_COUNT];
 
     double getHitRate() const {
         return totalAccesses > 0 ? 
@@ -53,4 +59,7 @@ private:
   static uint8_t nextTemporal(const uint16_t index);
   static uint8_t nextStrided(const uint16_t index);
   static uint8_t nextHotspot(const uint16_t index);
+
+  static BenchmarkResult runComparative(const uint16_t numAccesses);
+  static BenchmarkResult runSinglePattern(const BenchmarkPattern pattern, const uint16_t numAccesses);
 };
