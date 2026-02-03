@@ -1,21 +1,37 @@
-# Hardware Architecture for Memory Management and Cache Simulation
+# Memory Hierarchy & Cache Simulator
 
-## General Description
-The project aims to physically and logically simulate the memory subsystem of a modern processor. The objective is to build a system that demonstrates the performance difference between memory hierarchies (L1, L2, Main Memory) and implements data management algorithms.
+A hardware-based simulation of a modern processor's memory subsystem, demonstrating cache performance, eviction policies, and memory management on embedded hardware.
 
-## Bill of Materials
-- 1 Arduino Uno
-- 2 External EEPROM modules
-- 1 LCD Display
-- 3 Buttons
-- Resistors
-- 1 Potentiometer
-- Wires
-- Breadboard
+<details>
+<summary><B>General Description</B></summary>
+<br>
 
-## System Architecture
+This project physically simulates a 3-tier memory hierarchy using an Arduino Uno and external EEPROM modules. It implements multiple cache eviction algorithms, automated benchmarking, and performance analysis.
 
-### Memory Hierarchy:
+</details>
+
+<details>
+<summary><B>Bill of Materials</B></summary>
+<br>
+
+| Component | Quantity 
+|-----------|----------
+| Arduino Uno | 1 |
+| AT24CXX EEPROM | 2 |
+| 16x2 LCD Display | 1 |
+| Push Buttons | 3 |
+| LEDs | 3 |
+| Potentiometer | 1 |
+| Resistors | Various |
+| Wires | Various |
+| Breadboards | 2 |
+
+</details>
+
+<details>
+<summary><B>Memory Hierarchy</B></summary>
+<br>
+
 - <b>L1 Cache</b>: Implemented in Arduino's internal SRAM.
     - <b>Speed</b>: Instant.
     - <b>Capacity</b>: Very small.
@@ -25,18 +41,47 @@ The project aims to physically and logically simulate the memory subsystem of a 
 - <b>Main Memory</b>: External EEPROM module.
     - <b>Speed</b>: Artificially slowed to simulate a Hard Disk / SSD.
 
-## Software/Algorithms
+</details>
 
-### Memory Management
-- <b>Virtual Addressing</b>: The user interacts with virtual addresses.
-- <b>Page Table Simulation</b>: The system translates requests into physical addresses.
-- <b>Protection</b>: Simulating "Segmentation Fault" if a virtual address is not mapped.
+<details>
+<summary><B>Eviction Policies</B></summary>
+<br>
 
-### Cache
-- <b>LRU (Least Recently Used)</b>: When L1 is full, the system automatically evicts the oldest unused data.
-- <b>Write-Back</b>: Data modifications are done only in Cache (L1/L2). Writing to Main Memory is done only when modified data is evicted from memory.
+| Policy | Algorithm | Best For |
+|--------|-----------|----------|
+| **LRU** | Evicts oldest accessed entry | General workloads, temporal locality |
+| **LFU** | Evicts least frequently accessed | Hotspot patterns, repeated access |
+| **MRU** | Evicts most recently accessed | Streaming data, scan resistance |
 
-## Questions
+</details>
+
+<details>
+<summary><B>Benchmark Patterns</B></summary>
+<br>
+
+| Pattern | Description |
+|---------|-------------|
+| **SEQUENTIAL** | Addresses 0, 1, 2, 3... |
+| **RANDOM** | Random addresses |
+| **TEMPORAL** | Small working set (0-3) |
+| **STRIDED** | Every 2nd address |
+| **HOTSPOT** | 80% to 20% of addresses |
+| **COMPARATIVE** | Runs all policies |
+
+</details>
+
+<details>
+<summary><B>Photos</B></summary>
+<br>
+
+<img src="Media/Img1.jpeg" alt="Img1" height="300"/>
+
+</details>
+
+<details>
+<summary><B>Questions</B></summary>
+<br>
+
 <b>Q1 - What is the system boundary?</b>
 - <b>Inside</b>: Arduino Uno, EEPROM modules, LCD, buttons.
 - <b>Outside</b>: The human user.
@@ -52,3 +97,5 @@ The project aims to physically and logically simulate the memory subsystem of a 
 
 <b>Q5 - Why is this not just a tutorial?</b>
 - This project builds a custom OS simulation that manages bytes, which requires custom algorithm design.
+
+</details>
