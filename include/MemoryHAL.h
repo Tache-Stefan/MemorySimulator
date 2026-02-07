@@ -15,7 +15,7 @@ public:
   static uint8_t readMain(const uint16_t addr, const bool simulateDelay = true);
   static void writeMain(const uint16_t addr, const uint8_t data, const bool simulateDelay = true);
 
-public:
+private:
   static SoftwareWire diskBus;
 
   static constexpr uint8_t SOFT_SDA = 10;

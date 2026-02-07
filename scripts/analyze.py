@@ -54,7 +54,6 @@ def plot_results(results):
         return
     
     # Group by policy
-    #policies = list(set(r.get('policy', 'Unknown') for r in results))
     patterns = [r['pattern'][:3].upper() for r in results]
     
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
